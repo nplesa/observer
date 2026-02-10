@@ -1,3 +1,1 @@
-- Logging all request
-- Logging all database actions
-- Logging all application request
+

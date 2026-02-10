@@ -2,6 +2,7 @@
   "name": "nplesa/observer",
   "description": "Self-hosted Laravel Observer component",
   "type": "library",
+  "license": "MIT",
   "require": {
     "php": "^8.4",
     "laravel/framework": "^12.0",

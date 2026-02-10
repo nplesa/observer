@@ -7,7 +7,7 @@
     "php": "^8.4",
     "laravel/framework": "^12.0",
     "livewire/livewire": "^3.0",
-    "reverb/reverb-php": "^1.0"
+    "laravel/reverb": "*",
   },
   "autoload": {
     "psr-4": {

@@ -12,7 +12,7 @@ class ObserverServiceProvider extends ServiceProvider {
     public function boot() {
         $this->publishes([__DIR__.'/config/observer.php'=>config_path('observer.php')],'config');
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
         Livewire::component('requests-table',RequestsTable::class);
         Livewire::component('db-table',DbTable::class);
         Livewire::component('events-table',EventsTable::class);

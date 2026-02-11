@@ -8,7 +8,7 @@ return new class extends Migration {
             $table->id();
             $table->uuid('correlation_id')->nullable();
             $table->json('old')->nullable();
-            $table->json('url')->nullable();
+            $table->json('new')->nullable();
             $table->timestamps();
         });
     }

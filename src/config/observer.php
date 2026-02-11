@@ -1,8 +1,17 @@
 <?php
 return [
-    'enable_models_log'     => true,
-    'enable_requests_log'   => true,
-    'enable_db_log'         => false,
-    'enable_events_log'     => false,
-    'enable_jobs_log'       => false
+    'log_requests' => [
+        'enabled' => true,
+        // Rute care nu se loghează
+        'exclude_routes' => [
+            'admin/*',
+            'api/docs/*',
+        ]
+    ],
+    'log_db_actions' => true,
+    'log_events' => true,
+    'log_jobs' => true,
+    'log_models' => true,
+
 ];
+

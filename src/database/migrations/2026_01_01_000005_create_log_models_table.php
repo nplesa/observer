@@ -12,5 +12,5 @@ return new class extends Migration {
             $table->timestamps();
         });
     }
-    public function down() { Schema::dropIfExists('log_requests'); }
+    public function down() { Schema::dropIfExists('log_models'); }
 };

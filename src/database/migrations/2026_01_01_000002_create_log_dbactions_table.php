@@ -4,7 +4,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up() {
-        Schema::create('log_dbactions', function (Blueprint $table) {
+        Schema::create('log_dbchanges', function (Blueprint $table) {
             $table->id();
             $table->uuid('correlation_id')->nullable();
             $table->string('query');
@@ -12,5 +12,5 @@ return new class extends Migration {
             $table->timestamps();
         });
     }
-    public function down() { Schema::dropIfExists('log_dbactions'); }
+    public function down() { Schema::dropIfExists('log_dbchanges'); }
 };

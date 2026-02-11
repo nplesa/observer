@@ -1,12 +1,17 @@
 <?php
+
 return [
+
     'log_requests' => [
         'enabled' => true,
-        // Rute care nu se loghează
         'exclude_routes' => [
             'admin/*',
             'api/docs/*',
-        ]
+        ],
+        'ignore_methods' => [
+            'OPTIONS',
+            'HEAD',
+        ],
     ],
     'log_db_actions' => true,
     'log_events' => true,
@@ -14,4 +19,3 @@ return [
     'log_models' => true,
 
 ];
-

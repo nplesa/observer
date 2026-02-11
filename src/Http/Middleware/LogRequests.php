@@ -8,22 +8,22 @@ use nplesa\Observer\Models\LogRequest;
 
 class LogRequests
 {
-    /**
-     * Handle an incoming request.
-     */
     public function handle(Request $request, Closure $next)
     {
         $response = $next($request);
 
         $logConfig = config('observer.log_requests', []);
-
         if (empty($logConfig['enabled'])) {
             return $response;
         }
 
-        $exclude = $logConfig['exclude_routes'] ?? [];
+        $ignoreMethods = $logConfig['ignore_methods'] ?? [];
+        if (in_array($request->method(), $ignoreMethods)) {
+            return $response;
+        }
 
-        foreach ($exclude as $pattern) {
+        $excludeRoutes = $logConfig['exclude_routes'] ?? [];
+        foreach ($excludeRoutes as $pattern) {
             if ($request->is($pattern)) {
                 return $response;
             }

@@ -5,9 +5,9 @@
   "license": "MIT",
   "require": {
     "php": "^8.2",
-    "laravel/framework": "^12.7",   // latest 12.x version
-    "laravel/reverb": "^1.0",       // specify latest stable if known
-    "livewire/livewire": "^3.2"     // latest 3.x version
+    "laravel/framework": "^12.7",
+    "laravel/reverb": "^1.0",
+    "livewire/livewire": "^3.2"
   },
   "autoload": {
     "psr-4": {

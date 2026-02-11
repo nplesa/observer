@@ -23,7 +23,7 @@
   },
   "scripts": {
     "post-autoload-dump": [
-      "@php artisan vendor:publish --provider="nplesa\\Observer\\ObserverServiceProvider" --tag="config",
+      "@php artisan vendor:publish --provider=\"nplesa\\Observer\\ObserverServiceProvider\" --tag=config",
       "@php artisan migrate --force"
     ]
   }

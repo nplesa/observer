@@ -1,13 +1,13 @@
 {
   "name": "nplesa/observer",
-  "description": "Self-hosted Laravel Observer component",
+  "description": "Just another Laravel Observer component",
   "type": "library",
   "license": "MIT",
   "require": {
-    "php": "^8.4",
-    "laravel/framework": "^12.0",
-    "laravel/reverb": "*",
-    "livewire/livewire": "^3.0"
+    "php": "^8.2",
+    "laravel/framework": "^12.7",
+    "laravel/reverb": "^1.0",
+    "livewire/livewire": "^3.2"
   },
   "autoload": {
     "psr-4": {

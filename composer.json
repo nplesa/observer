@@ -6,7 +6,6 @@
   "require": {
     "php": "^8.2",
     "laravel/framework": "^12.7",
-    "laravel/reverb": "^1.0",
     "livewire/livewire": "^3.2"
   },
   "autoload": {
@@ -14,6 +13,8 @@
       "nplesa\\Observer\\": "src/"
     }
   },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "extra": {
     "laravel": {
       "providers": [

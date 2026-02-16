@@ -12,14 +12,6 @@ class LogRequests
     {
         $response = $next($request);
 
-        if (!in_array($request->method(), $rules['methods'])) {
-            return false;
-        }
-
-        if ($rules['only_authenticated'] && !$request->user()) {
-            return false;
-        }
-
         $logConfig = config('observer.log_requests', []);
 
         if (empty($logConfig['enabled'])) {
@@ -28,6 +20,18 @@ class LogRequests
 
         $ignoreMethods = $logConfig['ignore_methods'] ?? [];
         if (in_array($request->method(), $ignoreMethods)) {
+            return $response;
+        }
+
+        $rules = $logConfig['rules'] ?? [];
+
+        if (!empty($rules['methods']) &&
+            !in_array($request->method(), $rules['methods'])) {
+            return $response;
+        }
+
+        if (!empty($rules['only_authenticated']) &&
+            !$request->user()) {
             return $response;
         }
 
@@ -40,25 +44,23 @@ class LogRequests
 
         $status = $response->status();
         $logAll = $logConfig['log_all_statuses'] ?? true;
+
         if (!$logAll && $status < 400) {
             return $response;
         }
-
-        $userId = optional($request->user())->id;
 
         try {
             LogRequest::create([
                 'method'     => $request->method(),
                 'url'        => $request->fullUrl(),
                 'ip'         => $request->ip(),
-                'user_id'    => $userId,          // <-- aici salvăm user_id
+                'user_id'    => optional($request->user())->id,
                 'user_agent' => $request->userAgent(),
                 'status'     => $status,
             ]);
         } catch (\Throwable $e) {
             report($e);
         }
-
         return $response;
     }
 }

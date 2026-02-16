@@ -27,13 +27,24 @@ class ObserverServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        // Publica config și migrations – sigur la discovery
         $this->publishes([
             __DIR__.'/config/observer.php' => config_path('observer.php')
         ], 'config');
 
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
-        // REQUEST LOGGING
+        // Amânăm toate logările și observer-ele până când aplicația e complet încărcată
+        $this->app->booted(function () {
+            $this->registerRequestMiddleware();
+            $this->registerObservers();
+            $this->registerGlobalEventListener();
+            $this->registerJobLogging();
+        });
+    }
+
+    protected function registerRequestMiddleware()
+    {
         if (!empty(config('observer.log_requests.enabled'))) {
             try {
                 $this->app->make(Kernel::class)
@@ -42,35 +53,39 @@ class ObserverServiceProvider extends ServiceProvider
                 \Log::warning("ObserverServiceProvider: failed to push request middleware: ".$e->getMessage());
             }
         }
+    }
 
-        // MODEL LOGGING
-        if (!empty(config('observer.log_models.enabled'))) {
-            $models = config('observer.log_models.only');
+    protected function registerObservers()
+    {
+        if (empty(config('observer.log_models.enabled'))) return;
 
-            if (!empty($models)) {
-                foreach ($models as $model) {
-                    $this->safeObserveModel($model);
-                }
-            } else {
-                $modelsPath = app_path('Models');
-                if (is_dir($modelsPath)) {
-                    $iterator = new RecursiveIteratorIterator(
-                        new RecursiveDirectoryIterator($modelsPath)
-                    );
+        $models = config('observer.log_models.only');
 
-                    foreach ($iterator as $file) {
-                        if (!$file->isFile() || $file->getExtension() !== 'php') continue;
+        if (!empty($models)) {
+            foreach ($models as $model) {
+                $this->safeObserveModel($model);
+            }
+        } else {
+            $modelsPath = app_path('Models');
+            if (is_dir($modelsPath)) {
+                $iterator = new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($modelsPath)
+                );
 
-                        $relativePath = str_replace($modelsPath . DIRECTORY_SEPARATOR, '', $file->getPathname());
-                        $class = 'App\\Models\\' . str_replace([DIRECTORY_SEPARATOR, '.php'], ['\\', ''], $relativePath);
+                foreach ($iterator as $file) {
+                    if (!$file->isFile() || $file->getExtension() !== 'php') continue;
 
-                        $this->safeObserveModel($class);
-                    }
+                    $relativePath = str_replace($modelsPath . DIRECTORY_SEPARATOR, '', $file->getPathname());
+                    $class = 'App\\Models\\' . str_replace([DIRECTORY_SEPARATOR, '.php'], ['\\', ''], $relativePath);
+
+                    $this->safeObserveModel($class);
                 }
             }
         }
+    }
 
-        // EVENT LOGGING
+    protected function registerGlobalEventListener()
+    {
         if (!empty(config('observer.log_events.enabled'))) {
             try {
                 Event::listen('*', LogApplicationEvent::class);
@@ -78,8 +93,10 @@ class ObserverServiceProvider extends ServiceProvider
                 \Log::warning("ObserverServiceProvider: failed to register global event listener: ".$e->getMessage());
             }
         }
+    }
 
-        // JOB LOGGING
+    protected function registerJobLogging()
+    {
         if (!empty(config('observer.log_jobs.enabled'))) {
             try {
                 Queue::before(function ($event) {

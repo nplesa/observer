@@ -35,8 +35,12 @@ class ObserverServiceProvider extends ServiceProvider
 
         // REQUEST LOGGING
         if (!empty(config('observer.log_requests.enabled'))) {
-            $this->app->make(Kernel::class)
-                ->pushMiddleware(LogRequests::class);
+            try {
+                $this->app->make(Kernel::class)
+                    ->pushMiddleware(LogRequests::class);
+            } catch (\Throwable $e) {
+                \Log::warning("ObserverServiceProvider: failed to push request middleware: ".$e->getMessage());
+            }
         }
 
         // MODEL LOGGING
@@ -45,7 +49,7 @@ class ObserverServiceProvider extends ServiceProvider
 
             if (!empty($models)) {
                 foreach ($models as $model) {
-                    $this->observeConcreteModel($model);
+                    $this->safeObserveModel($model);
                 }
             } else {
                 $modelsPath = app_path('Models');
@@ -60,7 +64,7 @@ class ObserverServiceProvider extends ServiceProvider
                         $relativePath = str_replace($modelsPath . DIRECTORY_SEPARATOR, '', $file->getPathname());
                         $class = 'App\\Models\\' . str_replace([DIRECTORY_SEPARATOR, '.php'], ['\\', ''], $relativePath);
 
-                        $this->observeConcreteModel($class);
+                        $this->safeObserveModel($class);
                     }
                 }
             }
@@ -68,25 +72,37 @@ class ObserverServiceProvider extends ServiceProvider
 
         // EVENT LOGGING
         if (!empty(config('observer.log_events.enabled'))) {
-            Event::listen('*', LogApplicationEvent::class);
+            try {
+                Event::listen('*', LogApplicationEvent::class);
+            } catch (\Throwable $e) {
+                \Log::warning("ObserverServiceProvider: failed to register global event listener: ".$e->getMessage());
+            }
         }
 
         // JOB LOGGING
         if (!empty(config('observer.log_jobs.enabled'))) {
-            Queue::before(function ($event) {
-                (new LogJobs())->handle($event->job, fn($job) => $job);
-            });
+            try {
+                Queue::before(function ($event) {
+                    (new LogJobs())->handle($event->job, fn($job) => $job);
+                });
+            } catch (\Throwable $e) {
+                \Log::warning("ObserverServiceProvider: failed to register job listener: ".$e->getMessage());
+            }
         }
     }
 
-    protected function observeConcreteModel(string $class): void
+    protected function safeObserveModel(string $class): void
     {
         if (!class_exists($class)) return;
         if (!is_subclass_of($class, Model::class)) return;
 
-        $reflection = new ReflectionClass($class);
-        if ($reflection->isAbstract()) return;
+        try {
+            $reflection = new ReflectionClass($class);
+            if ($reflection->isAbstract()) return;
 
-        $class::observe(ModelObserver::class);
+            $class::observe(ModelObserver::class);
+        } catch (\Throwable $e) {
+            \Log::warning("ObserverServiceProvider: failed to observe $class: ".$e->getMessage());
+        }
     }
 }

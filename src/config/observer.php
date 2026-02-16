@@ -26,12 +26,8 @@ return [
         'only' => [
             // App\Events\SomeEvent::class
         ],
-        'ignore' => [
-            'Illuminate\\Log\\Events\\MessageLogged',
-            'Illuminate\\Cache\\Events\\',
-            'Illuminate\\Queue\\Events\\',
-        ],
-        
+        'ignore' => [],
+
     ],
     'log_jobs' => [
         'enabled' => true,

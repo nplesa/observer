@@ -12,6 +12,10 @@ return [
             'OPTIONS',
             'HEAD',
         ],
+        'rules' => [
+            'methods' => ['POST', 'PUT', 'DELETE'],
+            'only_authenticated' => true,
+        ],
     ],
     'log_db_actions' => true,
     'log_events' => true,

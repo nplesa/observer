@@ -12,6 +12,14 @@ class LogRequests
     {
         $response = $next($request);
 
+        if (!in_array($request->method(), $rules['methods'])) {
+            return false;
+        }
+
+        if ($rules['only_authenticated'] && !$request->user()) {
+            return false;
+        }
+
         $logConfig = config('observer.log_requests', []);
 
         if (empty($logConfig['enabled'])) {

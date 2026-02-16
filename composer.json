@@ -1,25 +1,23 @@
 {
-  "name": "nplesa/observer",
-  "description": "Just another Laravel Observer component",
-  "type": "library",
-  "license": "MIT",
-  "require": {
-    "php": "^8.2",
-    "laravel/framework": "^12.7",
-    "livewire/livewire": "^3.2"
-  },
-  "autoload": {
-    "psr-4": {
-      "nplesa\\observer\\": "src/"
+    "name": "nplesa/observer",
+    "description": "Observer package for Laravel",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "nplesa\\observer\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "nplesa\\observer\\ObserverServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "php": ">=8.1",
+        "illuminate/support": "^12.0",
+        "illuminate/database": "^12.0"
     }
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "extra": {
-    "laravel": {
-      "providers": [
-        "nplesa\\observer\\ObserverServiceProvider"
-      ]
-    }
-  }
 }

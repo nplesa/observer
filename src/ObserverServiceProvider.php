@@ -5,16 +5,17 @@ namespace nplesa\Observer;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
+use nplesa\Observer\Http\Middleware\LogRequests;
 use nplesa\Observer\Http\Middleware\LogJobs;
 use nplesa\Observer\Observers\ModelObserver;
-use nplesa\Observer\Http\Middleware\LogRequests;
+use nplesa\Observer\Listeners\LogApplicationEvent;
 
 class ObserverServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        // încarcă config default dacă nu a fost publicat
         $this->mergeConfigFrom(
             __DIR__.'/config/observer.php',
             'observer'
@@ -23,16 +24,14 @@ class ObserverServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        // publicare config
         $this->publishes([
             __DIR__.'/config/observer.php' => config_path('observer.php')
         ], 'config');
 
-        // load migrations
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
         // REQUEST LOGGING
-        if (config('observer.log_requests.enabled')) {
+        if (!empty(config('observer.log_requests.enabled'))) {
             $this->app->make(Kernel::class)
                 ->pushMiddleware(LogRequests::class);
         }
@@ -46,15 +45,18 @@ class ObserverServiceProvider extends ServiceProvider
                     $model::observe(ModelObserver::class);
                 }
             } else {
-                // toate modelele
                 Model::observe(ModelObserver::class);
             }
+        }
+
+        // EVENT LOGGING
+        if (!empty(config('observer.log_events.enabled'))) {
+            Event::listen('*', LogApplicationEvent::class);
         }
 
         // JOB LOGGING
         if (!empty(config('observer.log_jobs.enabled'))) {
             Queue::before(function ($event) {
-                // $event->job este job-ul care se execută
                 (new LogJobs())->handle($event->job, fn($job) => $job);
             });
         }

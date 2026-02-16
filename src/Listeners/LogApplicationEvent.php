@@ -10,39 +10,27 @@ class LogApplicationEvent
     {
         try {
             $eventClass = is_object($event) ? get_class($event) : (string)$event;
+
+            $only = Arr::get(config('observer.log_events.only', []), []);
+            $match = false;
+            foreach ($only as $prefix) {
+                if (str_starts_with($eventClass, $prefix)) {
+                    $match = true;
+                    break;
+                }
+            }
+            if (!$match) {
+                return; // ignorăm evenimentele interne Laravel
+            }
+
             $payloadArray = is_array($payload) ? $payload : [$payload];
 
-            $config = config('observer.log_events', []);
+            $jsonPayload = json_encode($payloadArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
-            $ignore = Arr::get($config, 'ignore', []);
-            foreach ($ignore as $prefix) {
-                if (str_ends_with($prefix, '\\')) {
-                    // prefix: ignorăm toate event-urile care încep cu acest namespace
-                    if (str_starts_with($eventClass, $prefix)) {
-                        return;
-                    }
-                } elseif ($eventClass === $prefix) {
-                    // ignorăm exact event-ul
-                    return;
-                }
-            }
-
-            $only = Arr::get($config, 'only', []);
-            if (!empty($only)) {
-                $match = false;
-                foreach ($only as $prefix) {
-                    if (str_starts_with($eventClass, $prefix)) {
-                        $match = true;
-                        break;
-                    }
-                }
-                if (!$match) return;
-            }
-
-            \Log::info("Event fired: {$eventClass}", $payloadArray);
+            \Log::info("Event fired: {$eventClass} - Payload: {$jsonPayload}");
 
         } catch (\Throwable $e) {
-            \Log::warning("LogApplicationEvent: failed to log event: ".$e->getMessage());
+            \Log::warning("LogApplicationEvent failed: ".$e->getMessage());
         }
     }
 }

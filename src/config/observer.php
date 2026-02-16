@@ -4,14 +4,8 @@ return [
 
     'log_requests' => [
         'enabled' => true,
-        'exclude_routes' => [
-            'admin/*',
-            'api/docs/*',
-        ],
-        'ignore_methods' => [
-            'OPTIONS',
-            'HEAD',
-        ],
+        'exclude_routes' => ['admin/*', 'api/docs/*'],
+        'ignore_methods' => ['OPTIONS', 'HEAD'],
         'rules' => [
             'methods' => ['POST', 'PUT', 'DELETE'],
             'only_authenticated' => true,
@@ -19,11 +13,27 @@ return [
     ],
     'log_models' => [
         'enabled' => true,
-        'queue' => true, // dacă false, scrie direct
-        'only' => [],
+        'queue' => true,  // async
+        'only' => [
+            // App\Models\User::class
+        ],
         'events' => ['created','updated','deleted','restored'],
         'log_only_dirty' => true,
     ],
-    'log_events' => true,
-    'log_jobs' => true,
+    'log_events' => [
+        'enabled' => true,
+        'queue' => true,  // async
+        'only' => [
+            // App\Events\SomeEvent::class
+        ],
+    ],
+    'log_jobs' => [
+        'enabled' => true,
+        'queue' => true,  // async
+        'only' => [
+            // App\Jobs\SomeJob::class
+        ],
+    ],
+
+    'connection' => null, // other DB connection
 ];

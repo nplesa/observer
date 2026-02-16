@@ -5,6 +5,8 @@ namespace nplesa\Observer;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Support\Facades\Queue;
+use nplesa\Observer\Http\Middleware\LogJobs;
 use nplesa\Observer\Observers\ModelObserver;
 use nplesa\Observer\Http\Middleware\LogRequests;
 
@@ -47,6 +49,14 @@ class ObserverServiceProvider extends ServiceProvider
                 // toate modelele
                 Model::observe(ModelObserver::class);
             }
+        }
+
+        // JOB LOGGING
+        if (!empty(config('observer.log_jobs.enabled'))) {
+            Queue::before(function ($event) {
+                // $event->job este job-ul care se execută
+                (new LogJobs())->handle($event->job, fn($job) => $job);
+            });
         }
     }
 }

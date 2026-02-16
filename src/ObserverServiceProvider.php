@@ -17,13 +17,13 @@ use RecursiveDirectoryIterator;
 
 class ObserverServiceProvider extends ServiceProvider
 {
-    // public function register()
-    // {
-    //     $this->mergeConfigFrom(
-    //         __DIR__.'/config/observer.php',
-    //         'observer'
-    //     );
-    // }
+    public function register()
+    {
+        $this->mergeConfigFrom(
+            __DIR__.'/config/observer.php',
+            'observer'
+        );
+    }
 
     public function boot()
     {

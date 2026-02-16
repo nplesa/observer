@@ -1,10 +1,10 @@
 <?php
 
-namespace nplesa\Observer\Http\Middleware;
+namespace nplesa\observer\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use nplesa\Observer\Models\LogRequest;
+use nplesa\observer\Models\LogRequest;
 
 class LogRequests
 {

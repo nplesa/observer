@@ -1,12 +1,12 @@
 <?php
 
-namespace nplesa\Observer\Jobs;
+namespace nplesa\observer\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use nplesa\Observer\Models\LogEvent;
+use nplesa\observer\Models\LogEvent;
 
 class LogEventJob implements ShouldQueue
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace nplesa\Observer\Http\Middleware;
+namespace nplesa\observer\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Queue;
-use nplesa\Observer\Models\LogJob as LogJobModel;
+use nplesa\observer\Models\LogJob as LogJobModel;
 
 class LogJobs
 {

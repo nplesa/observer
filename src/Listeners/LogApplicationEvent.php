@@ -1,9 +1,9 @@
 <?php
 
-namespace nplesa\Observer\Listeners;
+namespace nplesa\observer\Listeners;
 
-use nplesa\Observer\Models\LogEvent;
-use nplesa\Observer\Jobs\LogEventJob;
+use nplesa\observer\Models\LogEvent;
+use nplesa\observer\Jobs\LogEventJob;
 
 class LogApplicationEvent
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace nplesa\Observer\Models;
+namespace nplesa\observer\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

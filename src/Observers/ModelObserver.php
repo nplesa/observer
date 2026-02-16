@@ -1,9 +1,9 @@
 <?php
 
-namespace nplesa\Observer\Observers;
+namespace nplesa\observer\Observers;
 
-use nplesa\Observer\Models\LogModel;
-use nplesa\Observer\Jobs\LogModelJob;
+use nplesa\observer\Models\LogModel;
+use nplesa\observer\Jobs\LogModelJob;
 
 class ModelObserver
 {

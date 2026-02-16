@@ -11,6 +11,9 @@ class ObserverServiceProvider extends ServiceProvider {
         ->pushMiddleware(\nplesa\Observer\Http\Middleware\ObserverMiddleware::class);
     }
     public function register(){
-
+        $this->mergeConfigFrom(
+            __DIR__.'/config/observer.php',
+            'observer'
+        );
     }
 }

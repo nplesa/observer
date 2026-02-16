@@ -17,6 +17,16 @@ return [
             'only_authenticated' => true,
         ],
     ],
+
+    'log_models' => [
+        'enabled' => true,
+
+        'only' => [
+            // App\Models\User::class,
+        ],
+        'events' => ['created', 'updated', 'deleted', 'restored'],
+        'log_only_dirty' => true,
+    ],
     'log_db_actions' => true,
     'log_events' => true,
     'log_jobs' => true,

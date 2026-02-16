@@ -9,10 +9,12 @@ return new class extends Migration {
     {
         Schema::create('observer_models', function (Blueprint $table) {
             $table->id();
-            $table->string('model_class');
+            $table->string('model_type');
             $table->unsignedBigInteger('model_id');
             $table->string('event');
-            $table->json('changes')->nullable();
+            $table->json('old_values')->nullable();
+            $table->json('new_values')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
         });
     }

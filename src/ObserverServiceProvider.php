@@ -32,7 +32,12 @@ class ObserverServiceProvider extends ServiceProvider
             __DIR__.'/config/observer.php' => config_path('observer.php')
         ], 'config');
 
-        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        // $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+
+$this->publishes([
+    __DIR__.'/database/migrations' => database_path('migrations')
+], 'migrations');
+
 
         // Amânăm toate logările și observer-ele până când aplicația e complet încărcată
         $this->app->booted(function () {

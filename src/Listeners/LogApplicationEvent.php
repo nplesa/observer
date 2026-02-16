@@ -18,7 +18,7 @@ class LogApplicationEvent
         // Determinăm numele evenimentului
         $eventClass = is_object($event) ? get_class($event) : (string)$event;
 
-        // Convertim payload în array pentru logging
+        // Asigurăm că payload-ul este întotdeauna array
         $payloadArray = is_array($payload) ? $payload : [$payload];
 
         // Logăm evenimentul

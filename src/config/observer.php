@@ -28,7 +28,10 @@ return [
         ],
         'ignore' => [
             'Illuminate\\Log\\Events\\MessageLogged',
+            'Illuminate\\Cache\\Events\\',
+            'Illuminate\\Queue\\Events\\',
         ],
+        
     ],
     'log_jobs' => [
         'enabled' => true,

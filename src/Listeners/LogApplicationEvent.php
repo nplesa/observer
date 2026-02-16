@@ -15,8 +15,16 @@ class LogApplicationEvent
             $config = config('observer.log_events', []);
 
             $ignore = Arr::get($config, 'ignore', []);
-            if (in_array($eventClass, $ignore)) {
-                return;
+            foreach ($ignore as $prefix) {
+                if (str_ends_with($prefix, '\\')) {
+                    // prefix: ignorăm toate event-urile care încep cu acest namespace
+                    if (str_starts_with($eventClass, $prefix)) {
+                        return;
+                    }
+                } elseif ($eventClass === $prefix) {
+                    // ignorăm exact event-ul
+                    return;
+                }
             }
 
             $only = Arr::get($config, 'only', []);
@@ -32,6 +40,7 @@ class LogApplicationEvent
             }
 
             \Log::info("Event fired: {$eventClass}", $payloadArray);
+
         } catch (\Throwable $e) {
             \Log::warning("LogApplicationEvent: failed to log event: ".$e->getMessage());
         }

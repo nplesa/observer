@@ -16,5 +16,5 @@ class LogRequest extends Model
         'status',
     ];
 
-    protected $timestamps = true;
+    public $timestamps = true;
 }

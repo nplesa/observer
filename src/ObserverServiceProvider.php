@@ -44,12 +44,10 @@ class ObserverServiceProvider extends ServiceProvider
             $models = config('observer.log_models.only');
 
             if (!empty($models)) {
-                // Observăm modelele specificate în config
                 foreach ($models as $model) {
                     $this->observeConcreteModel($model);
                 }
             } else {
-                // Observăm toate modelele concrete din app/Models (recursiv)
                 $modelsPath = app_path('Models');
                 if (is_dir($modelsPath)) {
                     $iterator = new RecursiveIteratorIterator(
@@ -57,9 +55,7 @@ class ObserverServiceProvider extends ServiceProvider
                     );
 
                     foreach ($iterator as $file) {
-                        if (!$file->isFile() || $file->getExtension() !== 'php') {
-                            continue; // ignorăm foldere și fișiere non-PHP
-                        }
+                        if (!$file->isFile() || $file->getExtension() !== 'php') continue;
 
                         $relativePath = str_replace($modelsPath . DIRECTORY_SEPARATOR, '', $file->getPathname());
                         $class = 'App\\Models\\' . str_replace([DIRECTORY_SEPARATOR, '.php'], ['\\', ''], $relativePath);
@@ -83,23 +79,13 @@ class ObserverServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * Aplică ModelObserver doar modelelor concrete.
-     */
     protected function observeConcreteModel(string $class): void
     {
-        if (!class_exists($class)) {
-            return; // clasa nu există
-        }
-
-        if (!is_subclass_of($class, Model::class)) {
-            return; // nu e un model Eloquent
-        }
+        if (!class_exists($class)) return;
+        if (!is_subclass_of($class, Model::class)) return;
 
         $reflection = new ReflectionClass($class);
-        if ($reflection->isAbstract()) {
-            return; // ignorăm abstractele
-        }
+        if ($reflection->isAbstract()) return;
 
         $class::observe(ModelObserver::class);
     }

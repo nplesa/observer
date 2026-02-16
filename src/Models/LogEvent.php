@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LogEvent extends Model
 {
-    protected $table = 'log_events';
+    protected $table = 'observer_events';
 
     protected $fillable = [
         'event_class',

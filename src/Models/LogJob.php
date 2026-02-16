@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LogJob extends Model
 {
-    protected $table = 'log_jobs';
+    protected $table = 'observer_jobs';
 
     protected $fillable = [
         'job_class',

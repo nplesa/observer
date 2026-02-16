@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LogRequest extends Model
 {
-    protected $table = 'log_requests';
+    protected $table = 'observer_requests';
 
     protected $fillable = [
         'method',

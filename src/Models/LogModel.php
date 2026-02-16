@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LogModel extends Model
 {
-    protected $table = 'log_models';
+    protected $table = 'observer_models';
 
     protected $fillable = [
         'model_type',

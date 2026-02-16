@@ -2,8 +2,6 @@
 
 namespace nplesa\observer\Listeners;
 
-use Illuminate\Support\Arr;
-
 class LogApplicationEvent
 {
     public function handle($event, $payload)
@@ -11,7 +9,7 @@ class LogApplicationEvent
         try {
             $eventClass = is_object($event) ? get_class($event) : (string)$event;
 
-            $only = Arr::get(config('observer.log_events.only', []), []);
+            $only = config('observer.log_events.only', []);
             $match = false;
             foreach ($only as $prefix) {
                 if (str_starts_with($eventClass, $prefix)) {
@@ -19,9 +17,7 @@ class LogApplicationEvent
                     break;
                 }
             }
-            if (!$match) {
-                return; // ignorăm evenimentele interne Laravel
-            }
+            if (!$match) return;
 
             $payloadArray = is_array($payload) ? $payload : [$payload];
 

@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
-use nplesa\Observer\Http\Middleware\LogRequests;
-use nplesa\Observer\Http\Middleware\LogJobs;
-use nplesa\Observer\Observers\ModelObserver;
-use nplesa\Observer\Listeners\LogApplicationEvent;
+use nplesa\observer\Http\Middleware\LogRequests;
+use nplesa\observer\Http\Middleware\LogJobs;
+use nplesa\observer\Observers\ModelObserver;
+use nplesa\observer\Listeners\LogApplicationEvent;
 
 class ObserverServiceProvider extends ServiceProvider
 {

@@ -2,31 +2,26 @@
 
 namespace nplesa\observer\Listeners;
 
-use nplesa\observer\Models\LogEvent;
-use nplesa\observer\Jobs\LogEventJob;
+use Illuminate\Contracts\Events\Dispatcher;
 
 class LogApplicationEvent
 {
-    public function handle($event)
+    /**
+     * Handle the event.
+     *
+     * @param  mixed  $event
+     * @param  array  $payload
+     * @return void
+     */
+    public function handle($event, $payload)
     {
-        $config = config('observer.log_events', []);
-        if (empty($config['enabled'])) return;
+        // Determinăm numele evenimentului
+        $eventClass = is_object($event) ? get_class($event) : (string)$event;
 
-        // dacă avem only, verificăm
-        if (!empty($config['only']) && !in_array(get_class($event), $config['only'])) {
-            return;
-        }
+        // Convertim payload în array pentru logging
+        $payloadArray = is_array($payload) ? $payload : [$payload];
 
-        $data = [
-            'event_class' => get_class($event),
-            'payload' => method_exists($event,'toArray') ? $event->toArray() : (array) $event,
-            'user_id' => auth()->id(),
-        ];
-
-        if (!empty($config['queue'])) {
-            LogEventJob::dispatch($data);
-        } else {
-            LogEvent::create($data);
-        }
+        // Logăm evenimentul
+        \Log::info("Event fired: {$eventClass}", $payloadArray);
     }
 }

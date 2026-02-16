@@ -11,6 +11,9 @@ use nplesa\observer\Http\Middleware\LogRequests;
 use nplesa\observer\Http\Middleware\LogJobs;
 use nplesa\observer\Observers\ModelObserver;
 use nplesa\observer\Listeners\LogApplicationEvent;
+use ReflectionClass;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 
 class ObserverServiceProvider extends ServiceProvider
 {
@@ -41,11 +44,29 @@ class ObserverServiceProvider extends ServiceProvider
             $models = config('observer.log_models.only');
 
             if (!empty($models)) {
+                // Observăm modelele specificate în config
                 foreach ($models as $model) {
-                    $model::observe(ModelObserver::class);
+                    $this->observeConcreteModel($model);
                 }
             } else {
-                Model::observe(ModelObserver::class);
+                // Observăm toate modelele concrete din app/Models (recursiv)
+                $modelsPath = app_path('Models');
+                if (is_dir($modelsPath)) {
+                    $iterator = new RecursiveIteratorIterator(
+                        new RecursiveDirectoryIterator($modelsPath)
+                    );
+
+                    foreach ($iterator as $file) {
+                        if (!$file->isFile() || $file->getExtension() !== 'php') {
+                            continue; // ignorăm foldere și fișiere non-PHP
+                        }
+
+                        $relativePath = str_replace($modelsPath . DIRECTORY_SEPARATOR, '', $file->getPathname());
+                        $class = 'App\\Models\\' . str_replace([DIRECTORY_SEPARATOR, '.php'], ['\\', ''], $relativePath);
+
+                        $this->observeConcreteModel($class);
+                    }
+                }
             }
         }
 
@@ -60,5 +81,26 @@ class ObserverServiceProvider extends ServiceProvider
                 (new LogJobs())->handle($event->job, fn($job) => $job);
             });
         }
+    }
+
+    /**
+     * Aplică ModelObserver doar modelelor concrete.
+     */
+    protected function observeConcreteModel(string $class): void
+    {
+        if (!class_exists($class)) {
+            return; // clasa nu există
+        }
+
+        if (!is_subclass_of($class, Model::class)) {
+            return; // nu e un model Eloquent
+        }
+
+        $reflection = new ReflectionClass($class);
+        if ($reflection->isAbstract()) {
+            return; // ignorăm abstractele
+        }
+
+        $class::observe(ModelObserver::class);
     }
 }

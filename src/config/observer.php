@@ -15,6 +15,7 @@ return [
         'enabled' => true,
         'queue' => true,  // async
         'only' => [
+            '*',
             // App\Models\User::class
         ],
         'events' => ['created','updated','deleted','restored'],

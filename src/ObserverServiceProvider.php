@@ -43,6 +43,14 @@ class ObserverServiceProvider extends ServiceProvider
         // MODEL LOGGING
         if (!empty(config('observer.log_models.enabled'))) {
             $models = config('observer.log_models.only', []);
+            
+            if (in_array('*', $models)) {
+                $models = glob(app_path('Models').'/*.php'); // toate fișierele PHP din Models
+                $models = array_map(function($file){
+                    return 'App\\Models\\'.basename($file, '.php');
+                }, $models);
+            }
+
             foreach ($models as $model) {
                 if (class_exists($model)) {
                     $model::observe(ModelObserver::class);

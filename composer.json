@@ -6,7 +6,10 @@
     "autoload": {
         "psr-4": {
             "nplesa\\observer\\": "src/"
-        }
+        },
+        "files": [
+            "src/Support/helpers.php"
+        ]
     },
     "extra": {
         "laravel": {

@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->string('event_name');
             $table->json('payload')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
         });
     }

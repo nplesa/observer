@@ -4,9 +4,12 @@ namespace nplesa\observer\Observers;
 
 use nplesa\observer\Models\LogModel;
 use nplesa\observer\Jobs\LogModelJob;
+use nplesa\observer\Support\ObserverContext;
 
 class ModelObserver
 {
+
+
     public function created($model)  { 
         $this->handle('created', $model); 
     }
@@ -53,11 +56,11 @@ class ModelObserver
             'event'      => $event,
             'old_values' => $oldValues ? json_encode($oldValues) : null,
             'new_values' => $newValues ? json_encode($newValues) : null,
-            'user_id'    => auth()->id(),
+            'user_id'   => ObserverContext::getUserId(),
         ];
 
         if (!empty($config['queue'])) {
-            LogModelJob::dispatch($data);
+            LogModelJob::dispatch($data, ObserverContext::getUserId());
         } else {
             LogModel::create($data);
         }

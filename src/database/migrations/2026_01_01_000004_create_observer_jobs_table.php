@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->string('job_class');
             $table->json('payload')->nullable();
             $table->string('status')->default('pending');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
         });
     }

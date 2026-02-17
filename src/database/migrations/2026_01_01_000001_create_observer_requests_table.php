@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->string('ip', 45);
             $table->text('user_agent')->nullable();
             $table->unsignedSmallInteger('status')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
         });
     }

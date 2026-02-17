@@ -5,6 +5,7 @@ namespace nplesa\observer\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use nplesa\observer\Models\LogRequest;
+use nplesa\observer\Support\ObserverContext;
 
 class LogRequests
 {
@@ -54,7 +55,7 @@ class LogRequests
                 'method'     => $request->method(),
                 'url'        => $request->fullUrl(),
                 'ip'         => $request->ip(),
-                'user_id'    => optional($request->user())->id,
+                'user_id'    => ObserverContext::getUserId(),
                 'user_agent' => $request->userAgent(),
                 'status'     => $status,
             ]);

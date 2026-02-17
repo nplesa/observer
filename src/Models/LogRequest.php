@@ -14,6 +14,7 @@ class LogRequest extends Model
         'ip',
         'user_agent',
         'status',
+        'user_id',
     ];
 
     public $timestamps = true;

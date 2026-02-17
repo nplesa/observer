@@ -13,7 +13,7 @@ return [
     ],
     'log_models' => [
         'enabled' => true,
-        'queue' => true,  // async
+        'queue' => false,  // async
         'only' => [
             '*',
             // App\Models\User::class
